@@ -161,7 +161,7 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
-
+        //The new Delete Post Function
         public void DeletePost(int postId)
         {
             using (SqlConnection conn = Connection)
