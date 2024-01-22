@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -15,10 +17,20 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: UserProfileController
+        [Authorize]
         public ActionResult Index()
         {
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
             var userProfiles = _userProfileRepo.GetAllUserProfiles();
-            return View(userProfiles);
+            if (_userProfileRepo.IsAdmin(currentUser))
+            {
+                return View(userProfiles);
+            }
+            else
+            {
+                return NotFound("Not authorized as admin");
+            }
+            ;
         }
 
         // GET: UserProfileController/Details/5
@@ -90,8 +102,11 @@ namespace TabloidMVC.Controllers
             }
         }
 
-       
+        private int GetCurrentUserId()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(userId);
+        }
 
-     
     }
 }
