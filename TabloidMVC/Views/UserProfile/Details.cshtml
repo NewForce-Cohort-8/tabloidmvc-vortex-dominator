@@ -1,0 +1,35 @@
+﻿@model TabloidMVC.Models.UserProfile
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<h1 class="mb-4">User Profile</h1>
+<section class="container">
+    <img style="width:150px;float:left;margin-right:20px"
+         src=@Model.GetImage() />
+    <div>
+        <label class="fw-bold">@Html.DisplayNameFor(model => model.FullName):</label>
+        <span>@Html.DisplayFor(model => model.FullName)</span>
+    </div>
+    <div>
+        <label class="fw-bold">@Html.DisplayNameFor(model => model.DisplayName):</label>
+        <span>@Html.DisplayFor(model => model.DisplayName)</span>
+    </div>
+    <div>
+        <label class="fw-bold">@Html.DisplayNameFor(model => model.Email):</label>
+        <span>@Html.DisplayFor(model => model.Email)</span>
+    </div>
+    <div>
+        <label class="fw-bold">@Html.DisplayNameFor(model => model.CreateDateTime):</label>
+        <span>@Html.DisplayFor(model => model.CreateDateTime)</span>
+    </div>
+    <div>
+        <label class="fw-bold">@Html.DisplayNameFor(model => model.UserType.Name):</label>
+        <span>@Html.DisplayFor(model => model.UserType.Name)</span>
+    </div>
+</section>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    <a asp-action="Index">Back to List</a>
+</div>

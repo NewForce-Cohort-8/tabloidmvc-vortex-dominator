@@ -36,7 +36,16 @@ namespace TabloidMVC.Controllers
         // GET: UserProfileController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+            var userProfile = _userProfileRepo.GetById(id);
+            if (_userProfileRepo.IsAdmin(currentUser))
+            {
+                return View(userProfile);
+            }
+            else
+            {
+                return NotFound("Not authorized as admin");
+            }
         }
 
         // GET: UserProfileController/Create

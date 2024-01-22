@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace TabloidMVC.Models
 {
@@ -10,6 +11,7 @@ namespace TabloidMVC.Models
         [DisplayName("Display Name")]
         public string DisplayName { get; set; }
         public string Email { get; set; }
+        [DisplayFormat(DataFormatString ="{0:d}")]
         public DateTime CreateDateTime { get; set; }
         public string ImageLocation { get; set; }
         public int UserTypeId { get; set; }
@@ -21,6 +23,18 @@ namespace TabloidMVC.Models
             get
             {
                 return $"{FirstName} {LastName}";
+            }
+        }
+
+        public string GetImage()
+        {
+            if (ImageLocation is not null)
+            {
+                return ImageLocation;
+            }
+            else
+            {
+                return "https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg";
             }
         }
     }
