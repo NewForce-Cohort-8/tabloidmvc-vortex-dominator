@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
+using TabloidMVC.Models;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -25,16 +26,30 @@ namespace TabloidMVC.Controllers
         public ActionResult Index()
         {
             var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
-            var userProfiles = _userProfileRepo.GetAllUserProfiles();
+            var activeUserProfiles = _userProfileRepo.GetAllUserProfilesByStatus(1);
             if (_userProfileRepo.IsAdmin(currentUser))
             {
-                return View(userProfiles);
+                return View(activeUserProfiles);
             }
             else
             {
                 return NotFound("Not authorized as admin");
             }
-            ;
+        }
+
+        [Authorize]
+        public ActionResult ViewDeactivated()
+        {
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+            var deactivatedUserProfiles = _userProfileRepo.GetAllUserProfilesByStatus(2);
+            if (_userProfileRepo.IsAdmin(currentUser))
+            {
+                return View(deactivatedUserProfiles);
+            } 
+            else
+            {
+                return NotFound("Not authorized as admin");
+            }
         }
 
         // GET: UserProfileController/Details/5
@@ -113,27 +128,93 @@ namespace TabloidMVC.Controllers
             }
         }
 
-        // GET: UserProfileController/Delete/5
-        public ActionResult Delete(int id)
+        // GET: UserProfileController/Deactivate/5
+        public ActionResult Deactivate(int id)
+
         {
-            return View();
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+            UserProfile user = _userProfileRepo.GetById(id);
+            if (_userProfileRepo.IsAdmin(currentUser))
+            {
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return View(user);
+            } else
+            {
+                return NotFound("Not authorized as admin");
+            }
         }
 
-        // POST: UserProfileController/Delete/5
+        // POST: UserProfileController/Deactivate/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Deactivate(int id, UserProfile user)
         {
-            try
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+            if (_userProfileRepo.IsAdmin(currentUser))
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+                try
+                {
+
+                    _userProfileRepo.DeactivateUser(user);
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    return View(user);
+                }
+            } else
             {
-                return View();
+                return NotFound("Not authorized as admin");
             }
         }
 
+        // GET: UserProfileController/Reactivate/5
+        public ActionResult Reactivate(int id)
+
+        {
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+            UserProfile user = _userProfileRepo.GetById(id);
+            if (_userProfileRepo.IsAdmin(currentUser))
+            {
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return View(user);
+            }
+            else
+            {
+                return NotFound("Not authorized as admin");
+            }
+        }
+
+        // POST: UserProfileController/Reactivate/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Reactivate(int id, UserProfile user)
+        {
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+            if (_userProfileRepo.IsAdmin(currentUser))
+            {
+                try
+                {
+
+                    _userProfileRepo.ReactivateUser(user);
+                    return RedirectToAction("ViewDeactivated");
+                }
+                catch (Exception ex)
+                {
+                    return View(user);
+                }
+            }
+            else
+            {
+                return NotFound("Not authorized as admin");
+            }
+        }
         private int GetCurrentUserId()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
