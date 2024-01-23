@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using TabloidMVC.Models;
+using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -10,10 +12,12 @@ namespace TabloidMVC.Controllers
     {
 
         private readonly IUserProfileRepository _userProfileRepo;
+        private readonly IUserTypeRepository _userTypeRepo;
 
-        public UserProfileController(IUserProfileRepository userProfileRepository)
+        public UserProfileController(IUserProfileRepository userProfileRepository, IUserTypeRepository userTypeRepository)
         {
             _userProfileRepo = userProfileRepository;
+            _userTypeRepo = userTypeRepository;
         }
 
         // GET: UserProfileController
@@ -72,6 +76,14 @@ namespace TabloidMVC.Controllers
         // GET: UserProfileController/Edit/5
         public ActionResult Edit(int id)
         {
+            List<UserType> userTypes = _userTypeRepo.GetAll();
+            UserProfile user = _userProfileRepo.GetById(id);
+            UserProfileFormViewModel vm = new UserProfileFormViewModel()
+            {
+                User = user,
+                UserTypes = userTypes
+            };
+            if (own)
             return View();
         }
 
