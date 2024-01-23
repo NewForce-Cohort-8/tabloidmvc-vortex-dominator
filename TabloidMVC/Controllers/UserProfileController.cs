@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using TabloidMVC.Models;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -30,7 +31,6 @@ namespace TabloidMVC.Controllers
             {
                 return NotFound("Not authorized as admin");
             }
-            ;
         }
 
         // GET: UserProfileController/Details/5
@@ -91,23 +91,45 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: UserProfileController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Deactivate(int id)
+
         {
-            return View();
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+            UserProfile user = _userProfileRepo.GetById(id);
+            if (_userProfileRepo.IsAdmin(currentUser))
+            {
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return View(user);
+            } else
+            {
+                return NotFound("Not authorized as admin");
+            }
         }
 
         // POST: UserProfileController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Deactivate(int id, UserProfile user)
         {
-            try
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+            if (_userProfileRepo.IsAdmin(currentUser))
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+                try
+                {
+
+                    _userProfileRepo.DeactivateUser(user);
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    return View(user);
+                }
+            } else
             {
-                return View();
+                return NotFound("Not authorized as admin");
             }
         }
 

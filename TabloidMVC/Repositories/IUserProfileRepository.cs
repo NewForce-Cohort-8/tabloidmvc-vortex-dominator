@@ -8,5 +8,6 @@ namespace TabloidMVC.Repositories
         UserProfile GetById(int id);
         List <UserProfile> GetAllUserProfiles();
         bool IsAdmin(UserProfile userProfile);
+        void DeactivateUser(UserProfile user);
     }
 }
