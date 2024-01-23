@@ -28,7 +28,7 @@ namespace TabloidMVC.Controllers
         {
             var userProfile = _userProfileRepository.GetByEmail(credentials.Email);
 
-            if (userProfile == null)
+            if (userProfile == null || userProfile.StatusId == 2)
             {
                 ModelState.AddModelError("Email", "Invalid email");
                 return View();
@@ -38,6 +38,8 @@ namespace TabloidMVC.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, userProfile.Id.ToString()),
                 new Claim(ClaimTypes.Email, userProfile.Email),
+                new Claim("UserType", userProfile.UserTypeId.ToString()),
+                new Claim("Status", userProfile.StatusId.ToString()),
             };
 
             var claimsIdentity = new ClaimsIdentity(
