@@ -1,12 +1,12 @@
 ﻿@model TabloidMVC.Models.UserProfile
 
 @{
-    ViewData["Title"] = "Deactivate";
+    ViewData["Title"] = "Reactivate";
 }
 
-<h1>Deactivate</h1>
+<h1>Reactivate</h1>
 
-<h3>Are you sure you want to deactivate @Model.FullName?</h3>
+<h3>Are you sure you want to reactivate @Model.FullName?</h3>
 <div>
     <h4>User Profile</h4>
     <hr />
@@ -73,8 +73,8 @@
         </dd>
     </dl>
     
-    <form asp-action="Deactivate">
-        <input type="submit" value="Deactivate" class="btn btn-danger" /> |
-        <a asp-action="Index">Reject</a>
+    <form asp-action="Reactivate">
+        <input type="submit" value="Reactivate" class="btn btn-danger" /> |
+        <a asp-action="ViewDeactivated">Cancel</a>
     </form>
 </div>

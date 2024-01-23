@@ -104,7 +104,7 @@ namespace TabloidMVC.Repositories
             }
         }
 
-        public List<UserProfile> GetAllUserProfiles()
+        public List<UserProfile> GetAllUserProfilesByStatus(int id)
         {
             using (var conn = Connection)
             {
@@ -117,9 +117,10 @@ namespace TabloidMVC.Repositories
                               ut.[Name] AS UserTypeName
                          FROM UserProfile u
                               LEFT JOIN UserType ut ON u.UserTypeId = ut.id
-                              ORDER BY u.DisplayName";
-                        
-                   
+                         WHERE u.StatusId = @id
+                         ORDER BY u.DisplayName";
+                    cmd.Parameters.AddWithValue("@id", id);
+
 
                     UserProfile userProfile = null;
                     var reader = cmd.ExecuteReader();
@@ -179,6 +180,24 @@ namespace TabloidMVC.Repositories
                     cmd.CommandText = @"
                             UPDATE UserProfile
                             SET StatusId = 2
+                            WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", user.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public void ReactivateUser(UserProfile user)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            UPDATE UserProfile
+                            SET StatusId = 1
                             WHERE Id = @id";
                     cmd.Parameters.AddWithValue("@id", user.Id);
 
