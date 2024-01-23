@@ -151,6 +151,20 @@ namespace TabloidMVC.Repositories
             }
         }
      
+        public void UpdateUser(UserProfile userProfile)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE UserProfile SET UserTypeId = @userTypeId WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@userTypeId", )
+                }
+            }
+        }
 
         public bool IsAdmin(UserProfile user)
         {

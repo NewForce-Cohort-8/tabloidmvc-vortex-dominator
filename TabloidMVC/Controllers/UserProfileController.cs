@@ -83,17 +83,28 @@ namespace TabloidMVC.Controllers
                 User = user,
                 UserTypes = userTypes
             };
-            if (own)
-            return View();
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+            if (_userProfileRepo.IsAdmin(currentUser))
+            {
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return View(vm);
+            } else
+            {
+                return NotFound("Not authorized as admin");
+            }
         }
 
         // POST: UserProfileController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, UserProfile user)
         {
             try
             {
+                _userProfileRepo.UpdateUser(user);
                 return RedirectToAction(nameof(Index));
             }
             catch
