@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using TabloidMVC.Models;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -82,23 +83,30 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: UserProfileController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Deactivate(int id)
         {
-            return View();
+            UserProfile user = _userProfileRepo.GetById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
         }
 
         // POST: UserProfileController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Deactivate(int id, UserProfile user)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+
+                _userProfileRepo.DeactivateUser(user);
+                return RedirectToAction("Index");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return View(user);
             }
         }
 

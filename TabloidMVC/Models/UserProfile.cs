@@ -15,6 +15,8 @@ namespace TabloidMVC.Models
         public int UserTypeId { get; set; }
         public UserType UserType { get; set; }
 
+        public int StatusId { get; set; }
+
         [DisplayName("Full Name")]
         public string FullName
         {
