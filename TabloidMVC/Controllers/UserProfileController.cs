@@ -31,7 +31,6 @@ namespace TabloidMVC.Controllers
             {
                 return NotFound("Not authorized as admin");
             }
-            ;
         }
 
         // GET: UserProfileController/Details/5
@@ -84,13 +83,21 @@ namespace TabloidMVC.Controllers
 
         // GET: UserProfileController/Delete/5
         public ActionResult Deactivate(int id)
+
         {
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
             UserProfile user = _userProfileRepo.GetById(id);
-            if (user == null)
+            if (_userProfileRepo.IsAdmin(currentUser))
             {
-                return NotFound();
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return View(user);
+            } else
+            {
+                return NotFound("Not authorized as admin");
             }
-            return View(user);
         }
 
         // POST: UserProfileController/Delete/5
@@ -98,15 +105,22 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Deactivate(int id, UserProfile user)
         {
-            try
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+            if (_userProfileRepo.IsAdmin(currentUser))
             {
+                try
+                {
 
-                _userProfileRepo.DeactivateUser(user);
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
+                    _userProfileRepo.DeactivateUser(user);
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    return View(user);
+                }
+            } else
             {
-                return View(user);
+                return NotFound("Not authorized as admin");
             }
         }
 
