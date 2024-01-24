@@ -10,68 +10,34 @@
 <div>
     <h4>User Profile</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DisplayName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DisplayName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreateDateTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreateDateTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageLocation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageLocation)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserTypeId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserTypeId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StatusId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StatusId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FullName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FullName)
-        </dd>
-    </dl>
+    <section class="container">
+        <img style="width:150px;float:left;margin-right:20px"
+             src=@Model.GetImage() />
+        <div>
+            <label class="fw-bold">@Html.DisplayNameFor(model => model.FullName):</label>
+            <span>@Html.DisplayFor(model => model.FullName)</span>
+        </div>
+        <div>
+            <label class="fw-bold">@Html.DisplayNameFor(model => model.DisplayName):</label>
+            <span>@Html.DisplayFor(model => model.DisplayName)</span>
+        </div>
+        <div>
+            <label class="fw-bold">@Html.DisplayNameFor(model => model.Email):</label>
+            <span>@Html.DisplayFor(model => model.Email)</span>
+        </div>
+        <div>
+            <label class="fw-bold">@Html.DisplayNameFor(model => model.CreateDateTime):</label>
+            <span>@Html.DisplayFor(model => model.CreateDateTime)</span>
+        </div>
+        <div>
+            <label class="fw-bold">@Html.DisplayNameFor(model => model.UserType.Name):</label>
+            <span>@Html.DisplayFor(model => model.UserType.Name)</span>
+        </div>
+        <div>
+            <label class="fw-bold">@Html.DisplayNameFor(model => model.UserStatus.Name):</label>
+            <span>@Html.DisplayFor(model => model.UserStatus.Name)</span>
+        </div>
+    </section>
     
     <form asp-action="Deactivate">
         <input type="submit" value="Deactivate" class="btn btn-danger" /> |

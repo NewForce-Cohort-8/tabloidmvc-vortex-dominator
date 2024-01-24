@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
-using TabloidMVC.Models;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -91,22 +91,25 @@ namespace TabloidMVC.Controllers
         // GET: UserProfileController/Edit/5
         public ActionResult Edit(int id)
         {
-            List<UserType> userTypes = _userTypeRepo.GetAll();
-            UserProfile user = _userProfileRepo.GetById(id);
-            UserProfileFormViewModel vm = new UserProfileFormViewModel()
-            {
-                User = user,
-                UserTypes = userTypes
-            };
+            
             var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
             if (_userProfileRepo.IsAdmin(currentUser))
             {
+                List<UserType> userTypes = _userTypeRepo.GetAll();
+                UserProfile user = _userProfileRepo.GetById(id);
+
+                UserProfileFormViewModel vm = new UserProfileFormViewModel()
+                {
+                    User = user,
+                    UserTypes = userTypes
+                };
                 if (user == null)
                 {
                     return NotFound();
                 }
                 return View(vm);
-            } else
+            } 
+            else
             {
                 return NotFound("Not authorized as admin");
             }
@@ -120,11 +123,11 @@ namespace TabloidMVC.Controllers
             try
             {
                 _userProfileRepo.UpdateUser(user);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                return View(user);
             }
         }
 
