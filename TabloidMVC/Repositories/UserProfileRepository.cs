@@ -117,7 +117,7 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"SELECT Id, FirstName, LastName, DisplayName, Email, CreateDateTime, ImageLocation, StatusId, UserTypeId 
-                                        FROM UserProfile WHERE UserTypeId = 1";
+                                        FROM UserProfile WHERE UserTypeId = 1 AND StatusId = 1";
 
                     UserProfile userProfile = null;
                     var reader = cmd.ExecuteReader();
