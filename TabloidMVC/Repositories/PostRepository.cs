@@ -161,6 +161,44 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+        //NEW update post function
+        public void UpdatePost(Post post)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText =
+                        @"
+                    UPDATE Post
+                    SET 
+                        Title = @Title, 
+                        Content = @Content, 
+                        ImageLocation = @ImageLocation, 
+                        CreateDateTime = @CreateDateTime, 
+                        PublishDateTime = @PublishDateTime,
+                        IsApproved =  @IsApproved,
+                        CategoryId = @CategoryId,
+                        UserProfileId  = @UserProfileId
+                    WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@Title", post.Title);
+                    cmd.Parameters.AddWithValue("@Content", post.Content);
+                    cmd.Parameters.AddWithValue("@ImageLocation", DbUtils.ValueOrDBNull(post.ImageLocation));
+                    cmd.Parameters.AddWithValue("@CreateDateTime", post.CreateDateTime);
+                    cmd.Parameters.AddWithValue("@PublishDateTime", DbUtils.ValueOrDBNull(post.PublishDateTime));
+                    cmd.Parameters.AddWithValue("@IsApproved", post.IsApproved);
+                    cmd.Parameters.AddWithValue("@CategoryId", post.CategoryId);
+                    cmd.Parameters.AddWithValue("@UserProfileId", post.UserProfileId);
+                    cmd.Parameters.AddWithValue("@id", post.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+
         //The new Delete Post Function
         public void DeletePost(int postId)
         {
