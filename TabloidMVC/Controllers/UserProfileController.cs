@@ -6,6 +6,8 @@ using System.Security.Claims;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
+using System.Security.Principal;
+using System.Web;
 
 namespace TabloidMVC.Controllers
 {
@@ -120,15 +122,21 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, UserProfile user)
         {
-            try
+            if (_userProfileRepo.GetAllAdmins().Count < 2)
             {
-                _userProfileRepo.UpdateUser(user);
-                return RedirectToAction("Index");
+                Response.Write("<script>alert('Data inserted successfully')</script>");
+                {
+                try
+                {
+                    _userProfileRepo.UpdateUser(user);
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    return View(user);
+                }
             }
-            catch(Exception ex)
-            {
-                return View(user);
-            }
+            
         }
 
         // GET: UserProfileController/Deactivate/5
