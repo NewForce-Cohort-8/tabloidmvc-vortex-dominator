@@ -85,6 +85,7 @@ namespace TabloidMVC.Controllers
             try
             {
                 _userProfileRepo.AddUser(user);
+                
                 return RedirectToAction("Index", "Home");
             }
             catch(Exception ex)
