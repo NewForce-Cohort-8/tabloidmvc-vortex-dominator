@@ -4,7 +4,15 @@
     ViewData["Title"] = "Deactivate";
 }
 
-@if (Model.Admins.Count >= 2)
+@if (Model.Admins.Contains(Model.Admins.Find(i => i.Id == Model.User.Id)) && Model.Admins.Count == 1)
+{
+    <h3>Cannot deactivate @Model.User.FullName</h3>
+    <div>
+        <p>There must be at least one active administrator at all times. Please make another user an administrator or reactivate a deactivated administrator before deactivating @Model.User.FullName</p>
+    </div>
+    <a asp-action="Index">Back to User Profiles</a>
+   
+} else
 {
     <h1>Deactivate</h1>
     <h3>Are you sure you want to deactivate @Model.User.FullName?</h3>
@@ -13,7 +21,7 @@
         <hr />
         <section class="container">
             <img style="width:150px;float:left;margin-right:20px"
-            src=@Model.User.GetImage() />
+                 src=@Model.User.GetImage() />
             <div>
                 <label class="fw-bold">@Html.DisplayNameFor(model => model.User.FullName):</label>
                 <span>@Html.DisplayFor(model => model.User.FullName)</span>
@@ -45,11 +53,4 @@
             <a asp-action="Index">Reject</a>
         </form>
     </div>
-} else
-{
-    <h3>Cannot deactivate @Model.User.FullName</h3>
-    <div>
-        <p>There must be at least one active administrator at all times. Please make another user an administrator or reactivate a deactivated administrator before deactivating @Model.User.FullName</p>
-    </div>
-    <a asp-action="Index">Back to User Profiles</a>
 }
