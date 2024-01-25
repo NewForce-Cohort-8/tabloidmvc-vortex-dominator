@@ -41,7 +41,10 @@
                                 <li class="nav-item ">
                                     <a class="nav-link  rounded " asp-area="" asp-controller="Post" asp-action="Index">POSTS</a>
                                 </li>
-                                //@if (User.FindFirst("UserType").Value == "1")
+                                <li class="nav-item ">
+                                    <a class="nav-link rounded " asp-area="" asp-controller="Category" asp-action="Index">CATEGORIES</a>
+                                </li>
+                                @if (User.FindFirst("UserType").Value == "1")
                                 {
                                     <li class="nav-item ">
                                         <a class="nav-link  rounded " asp-area="" asp-controller="UserProfile" asp-action="Index">USER PROFILES</a>
@@ -56,8 +59,8 @@
                             <li class="nav-item">
                                 <a class="nav-link  rounded " asp-area="" asp-controller="Account" asp-action="Login">LOGIN</a>
                             </li>
-                            <li class="nav-item ">
-                                <a class="nav-link rounded " asp-area="" asp-controller="Category" asp-action="Index">Categories</a>
+                            <li class="nav-item">
+                                <a class="nav-link  rounded " asp-area="" asp-controller="UserProfile" asp-action="Register">REGISTER</a>
                             </li>
                         }
                     </ul>

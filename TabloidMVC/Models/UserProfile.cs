@@ -6,7 +6,9 @@ namespace TabloidMVC.Models
     public class UserProfile
     {
         public int Id { get; set; }
+        [DisplayName("First Name")]
         public string FirstName { get; set; }
+        [DisplayName("Last Name")]
         public string LastName { get; set; }
         [DisplayName("Display Name")]
         public string DisplayName { get; set; }
@@ -14,7 +16,7 @@ namespace TabloidMVC.Models
         [DisplayName("Date Created")]
         [DisplayFormat(DataFormatString ="{0:d}")]
         public DateTime CreateDateTime { get; set; }
-        public string ImageLocation { get; set; }
+        public string? ImageLocation { get; set; }
         [DisplayName("User Type")]
         public int UserTypeId { get; set; }
         public UserType UserType { get; set; }
