@@ -67,9 +67,10 @@ namespace TabloidMVC.Repositories
                     cmd.CommandText = @"
                        SELECT u.id, u.FirstName, u.LastName, u.DisplayName, u.Email,
                               u.CreateDateTime, u.ImageLocation, u.UserTypeId, u.StatusId,
-                              ut.[Name] AS UserTypeName
+                              ut.[Name] AS UserTypeName, us.[Name] as UserStatusName
                          FROM UserProfile u
                               LEFT JOIN UserType ut ON u.UserTypeId = ut.id
+                              LEFT JOIN UserStatus us ON u.StatusId = us.id
                         WHERE u.id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
 
@@ -89,6 +90,11 @@ namespace TabloidMVC.Repositories
                             ImageLocation = DbUtils.GetNullableString(reader, "ImageLocation"),
                             UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
                             StatusId = reader.GetInt32(reader.GetOrdinal("StatusId")),
+                            UserStatus = new UserStatus()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("StatusId")),
+                                Name = reader.GetString(reader.GetOrdinal("UserStatusName"))
+                            },
                             UserType = new UserType()
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
@@ -156,6 +162,23 @@ namespace TabloidMVC.Repositories
             }
         }
      
+        public void UpdateUser(UserProfile userProfile)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE UserProfile SET UserTypeId = @userTypeId WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@userTypeId", userProfile.UserTypeId);
+                    cmd.Parameters.AddWithValue("@id", userProfile.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
 
         public bool IsAdmin(UserProfile user)
         {
