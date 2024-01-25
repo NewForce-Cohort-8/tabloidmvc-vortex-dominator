@@ -11,12 +11,14 @@ namespace TabloidMVC.Models
         [DisplayName("Display Name")]
         public string DisplayName { get; set; }
         public string Email { get; set; }
+        [DisplayName("Date Created")]
         [DisplayFormat(DataFormatString ="{0:d}")]
         public DateTime CreateDateTime { get; set; }
         public string ImageLocation { get; set; }
+        [DisplayName("User Type")]
         public int UserTypeId { get; set; }
         public UserType UserType { get; set; }
-
+        public UserStatus UserStatus { get; set; }
         public int StatusId { get; set; }
 
         [DisplayName("Full Name")]

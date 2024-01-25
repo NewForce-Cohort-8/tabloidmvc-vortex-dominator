@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TabloidMVC.Models;
+using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -11,10 +13,12 @@ namespace TabloidMVC.Controllers
     {
 
         private readonly IUserProfileRepository _userProfileRepo;
+        private readonly IUserTypeRepository _userTypeRepo;
 
-        public UserProfileController(IUserProfileRepository userProfileRepository)
+        public UserProfileController(IUserProfileRepository userProfileRepository, IUserTypeRepository userTypeRepository)
         {
             _userProfileRepo = userProfileRepository;
+            _userTypeRepo = userTypeRepository;
         }
 
         // GET: UserProfileController
@@ -87,21 +91,43 @@ namespace TabloidMVC.Controllers
         // GET: UserProfileController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            
+            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+            if (_userProfileRepo.IsAdmin(currentUser))
+            {
+                List<UserType> userTypes = _userTypeRepo.GetAll();
+                UserProfile user = _userProfileRepo.GetById(id);
+
+                UserProfileFormViewModel vm = new UserProfileFormViewModel()
+                {
+                    User = user,
+                    UserTypes = userTypes
+                };
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return View(vm);
+            } 
+            else
+            {
+                return NotFound("Not authorized as admin");
+            }
         }
 
         // POST: UserProfileController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, UserProfile user)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                _userProfileRepo.UpdateUser(user);
+                return RedirectToAction("Index");
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                return View(user);
             }
         }
 
