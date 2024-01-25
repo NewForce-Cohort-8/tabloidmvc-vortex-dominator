@@ -14,7 +14,7 @@ namespace TabloidMVC.Models
         [DisplayName("Date Created")]
         [DisplayFormat(DataFormatString ="{0:d}")]
         public DateTime CreateDateTime { get; set; }
-        public string ImageLocation { get; set; }
+        public string? ImageLocation { get; set; }
         [DisplayName("User Type")]
         public int UserTypeId { get; set; }
         public UserType UserType { get; set; }

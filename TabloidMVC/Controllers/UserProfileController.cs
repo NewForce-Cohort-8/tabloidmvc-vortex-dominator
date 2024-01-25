@@ -68,7 +68,7 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: UserProfileController/Create
-        public ActionResult Create()
+        public ActionResult Register()
         {
             return View();
         }
@@ -76,15 +76,21 @@ namespace TabloidMVC.Controllers
         // POST: UserProfileController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Register(UserProfile user)
         {
+            user.CreateDateTime = DateTime.Now;
+            user.StatusId = 1;
+            user.UserTypeId = 2;
+            user.ImageLocation = null;
             try
             {
-                return RedirectToAction(nameof(Index));
+                _userProfileRepo.AddUser(user);
+                return RedirectToAction("Login", "Account");
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                Console.WriteLine(ex.ToString());
+                return View(user);
             }
         }
 
