@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using TabloidMVC.Models;
+using TabloidMVC.Repositories;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using TabloidMVC.Models;
 
@@ -14,7 +16,7 @@ namespace TabloidMVC.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT id, name FROM Category";
+                    cmd.CommandText = "SELECT id, name FROM Category ORDER BY name";
                     var reader = cmd.ExecuteReader();
 
                     var categories = new List<Category>();
