@@ -22,12 +22,27 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (User.Identity.IsAuthenticated)
                         {
+                            <li class="nav-item ">
+                                <a class="nav-link rounded " asp-area="" asp-controller="Home" asp-action="Index">HOME</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link  rounded " asp-area="" asp-controller="Post" asp-action="Index">POSTS</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link rounded " asp-area="" asp-controller="Category" asp-action="Index">Categories</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link  rounded " asp-area="" asp-controller="Account" asp-action="Logout">LOGOUT</a>
+                            </li>
 
                                 <li class="nav-item ">
                                     <a class="nav-link rounded " asp-area="" asp-controller="Home" asp-action="Index">HOME</a>
                                 </li>
                                 <li class="nav-item ">
                                     <a class="nav-link  rounded " asp-area="" asp-controller="Post" asp-action="Index">POSTS</a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a class="nav-link rounded " asp-area="" asp-controller="Category" asp-action="Index">CATEGORIES</a>
                                 </li>
                                 @if (User.FindFirst("UserType").Value == "1")
                                 {

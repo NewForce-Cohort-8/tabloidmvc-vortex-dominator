@@ -113,7 +113,44 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+        public List<UserProfile> GetAllAdmins()
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT Id, FirstName, LastName, DisplayName, Email, CreateDateTime, ImageLocation, StatusId, UserTypeId 
+                                        FROM UserProfile WHERE UserTypeId = 1 AND StatusId = 1";
 
+                    UserProfile userProfile = null;
+                    var reader = cmd.ExecuteReader();
+
+                    var userProfiles = new List<UserProfile>();
+
+                    while (reader.Read())
+                    {
+                        userProfile = new UserProfile()
+                        {
+
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Email = reader.GetString(reader.GetOrdinal("Email")),
+                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            DisplayName = reader.GetString(reader.GetOrdinal("DisplayName")),
+                            CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
+                            ImageLocation = DbUtils.GetNullableString(reader, "ImageLocation"),
+                            UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
+                            StatusId = reader.GetInt32(reader.GetOrdinal("StatusId")),
+                        };
+                        userProfiles.Add(userProfile);
+                    }
+                    reader.Close();
+
+                    return userProfiles;
+                }
+            }
+        }
         public List<UserProfile> GetAllUserProfilesByStatus(int id)
         {
             using (var conn = Connection)
