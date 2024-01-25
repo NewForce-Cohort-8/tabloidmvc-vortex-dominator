@@ -7,6 +7,7 @@ namespace TabloidMVC.Repositories
         UserProfile GetByEmail(string email);
         UserProfile GetById(int id);
         List <UserProfile> GetAllUserProfilesByStatus(int id);
+        List<UserProfile> GetAllAdmins();
         bool IsAdmin(UserProfile userProfile);
         void UpdateUser(UserProfile userProfile);
         void DeactivateUser(UserProfile user);

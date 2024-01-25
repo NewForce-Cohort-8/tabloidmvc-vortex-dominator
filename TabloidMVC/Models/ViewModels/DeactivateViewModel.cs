@@ -3,10 +3,9 @@ using System.Collections.Generic;
 
 namespace TabloidMVC.Models.ViewModels
 {
-    public class UserProfileFormViewModel
+    public class DeactivateViewModel
     {
-        public List<UserType> UserTypes { get; set; }
-        public UserProfile User {  get; set; }
         public List<UserProfile> Admins { get; set; }
+        public UserProfile User { get; set; }
     }
 }

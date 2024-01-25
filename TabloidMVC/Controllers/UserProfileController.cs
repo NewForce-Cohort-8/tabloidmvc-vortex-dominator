@@ -6,6 +6,8 @@ using System.Security.Claims;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
+using System.Security.Principal;
+using System.Web;
 
 namespace TabloidMVC.Controllers
 {
@@ -45,7 +47,7 @@ namespace TabloidMVC.Controllers
             if (_userProfileRepo.IsAdmin(currentUser))
             {
                 return View(deactivatedUserProfiles);
-            } 
+            }
             else
             {
                 return NotFound("Not authorized as admin");
@@ -91,24 +93,27 @@ namespace TabloidMVC.Controllers
         // GET: UserProfileController/Edit/5
         public ActionResult Edit(int id)
         {
-            
+
             var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
             if (_userProfileRepo.IsAdmin(currentUser))
             {
                 List<UserType> userTypes = _userTypeRepo.GetAll();
                 UserProfile user = _userProfileRepo.GetById(id);
+                List<UserProfile> admins = _userProfileRepo.GetAllAdmins();
 
                 UserProfileFormViewModel vm = new UserProfileFormViewModel()
                 {
                     User = user,
-                    UserTypes = userTypes
+                    UserTypes = userTypes,
+                    Admins = admins
                 };
                 if (user == null)
                 {
                     return NotFound();
                 }
+
                 return View(vm);
-            } 
+            }
             else
             {
                 return NotFound("Not authorized as admin");
@@ -120,109 +125,119 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, UserProfile user)
         {
+                
             try
             {
                 _userProfileRepo.UpdateUser(user);
                 return RedirectToAction("Index");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return View(user);
             }
+            
         }
 
-        // GET: UserProfileController/Deactivate/5
-        public ActionResult Deactivate(int id)
+            // GET: UserProfileController/Deactivate/5
+            public ActionResult Deactivate(int id)
 
-        {
-            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
-            UserProfile user = _userProfileRepo.GetById(id);
-            if (_userProfileRepo.IsAdmin(currentUser))
             {
+                var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+                if (_userProfileRepo.IsAdmin(currentUser))
+                {
+                List<UserProfile> admins = _userProfileRepo.GetAllAdmins();
+                UserProfile user = _userProfileRepo.GetById(id);
+
+                DeactivateViewModel vm = new DeactivateViewModel()
+                {
+                    User = user,
+                    Admins = admins
+                };
                 if (user == null)
+                    {
+                        return NotFound();
+                    }
+                    return View(vm);
+                } else
                 {
-                    return NotFound();
+                    return NotFound("Not authorized as admin");
                 }
-                return View(user);
-            } else
-            {
-                return NotFound("Not authorized as admin");
             }
-        }
 
-        // POST: UserProfileController/Deactivate/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Deactivate(int id, UserProfile user)
-        {
-            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
-            if (_userProfileRepo.IsAdmin(currentUser))
+            // POST: UserProfileController/Deactivate/5
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public ActionResult Deactivate(int id, UserProfile user)
             {
-                try
+                var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+                if (_userProfileRepo.IsAdmin(currentUser))
                 {
+                    try
+                    {
 
-                    _userProfileRepo.DeactivateUser(user);
-                    return RedirectToAction("Index");
-                }
-                catch (Exception ex)
+                        _userProfileRepo.DeactivateUser(user);
+                        return RedirectToAction("Index");
+                    }
+                    catch (Exception ex)
+                    {
+                        return View(user);
+                    }
+                } else
                 {
+                    return NotFound("Not authorized as admin");
+                }
+            }
+
+            // GET: UserProfileController/Reactivate/5
+            public ActionResult Reactivate(int id)
+
+            {
+                var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+                UserProfile user = _userProfileRepo.GetById(id);
+                if (_userProfileRepo.IsAdmin(currentUser))
+                {
+                    if (user == null)
+                    {
+                        return NotFound();
+                    }
                     return View(user);
                 }
-            } else
-            {
-                return NotFound("Not authorized as admin");
-            }
-        }
-
-        // GET: UserProfileController/Reactivate/5
-        public ActionResult Reactivate(int id)
-
-        {
-            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
-            UserProfile user = _userProfileRepo.GetById(id);
-            if (_userProfileRepo.IsAdmin(currentUser))
-            {
-                if (user == null)
+                else
                 {
-                    return NotFound();
-                }
-                return View(user);
-            }
-            else
-            {
-                return NotFound("Not authorized as admin");
-            }
-        }
-
-        // POST: UserProfileController/Reactivate/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Reactivate(int id, UserProfile user)
-        {
-            var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
-            if (_userProfileRepo.IsAdmin(currentUser))
-            {
-                try
-                {
-
-                    _userProfileRepo.ReactivateUser(user);
-                    return RedirectToAction("ViewDeactivated");
-                }
-                catch (Exception ex)
-                {
-                    return View(user);
+                    return NotFound("Not authorized as admin");
                 }
             }
-            else
+
+            // POST: UserProfileController/Reactivate/5
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public ActionResult Reactivate(int id, UserProfile user)
             {
-                return NotFound("Not authorized as admin");
+                var currentUser = _userProfileRepo.GetById(GetCurrentUserId());
+                if (_userProfileRepo.IsAdmin(currentUser))
+                {
+                    try
+                    {
+
+                        _userProfileRepo.ReactivateUser(user);
+                        return RedirectToAction("ViewDeactivated");
+                    }
+                    catch (Exception ex)
+                    {
+                        return View(user);
+                    }
+                }
+                else
+                {
+                    return NotFound("Not authorized as admin");
+                }
             }
-        }
-        private int GetCurrentUserId()
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return int.Parse(userId);
-        }
+            private int GetCurrentUserId()
+            {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                return int.Parse(userId);
+            }
 
     }
 }
+

@@ -4,8 +4,8 @@
     ViewData["Title"] = "Edit";
 }
 
+    
 <h1>Edit</h1>
-
 <h4>User Profile for @Model.User.FullName </h4>
 <hr />
 <div class="row">
@@ -53,16 +53,24 @@
                     <span asp-validation-for="User.UserTypeId" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+           
+                <div class="form-group">
+                     @if (Model.Admins.Contains(Model.Admins.Find(i => i.Id == Model.User.Id)) && Model.Admins.Count == 1)
+            {
+                    <p>There must be at least one active administrator at all times. Please make another user an administrator or reactivate a deactivated administrator before removing administrator priveleges from @Model.User.FullName</p>
+            }
+            else
+            {
+                    <input type="submit" value="Save" class="btn btn-primary" />
+            }
+                    <a asp-action="Index">Back to List</a>
+
+                </div>
+           
+           
         </form>
         </section>
    
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

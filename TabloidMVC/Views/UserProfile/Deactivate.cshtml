@@ -1,46 +1,56 @@
-﻿@model TabloidMVC.Models.UserProfile
+﻿@model TabloidMVC.Models.ViewModels.DeactivateViewModel
 
 @{
     ViewData["Title"] = "Deactivate";
 }
 
-<h1>Deactivate</h1>
+@if (Model.Admins.Contains(Model.Admins.Find(i => i.Id == Model.User.Id)) && Model.Admins.Count == 1)
+{
+    <h3>Cannot deactivate @Model.User.FullName</h3>
+    <div>
+        <p>There must be at least one active administrator at all times. Please make another user an administrator or reactivate a deactivated administrator before deactivating @Model.User.FullName</p>
+    </div>
+    <a asp-action="Index">Back to User Profiles</a>
+   
+} else
+{
+    <h1>Deactivate</h1>
+    <h3>Are you sure you want to deactivate @Model.User.FullName?</h3>
+    <div>
+        <h4>User Profile</h4>
+        <hr />
+        <section class="container">
+            <img style="width:150px;float:left;margin-right:20px"
+                 src=@Model.User.GetImage() />
+            <div>
+                <label class="fw-bold">@Html.DisplayNameFor(model => model.User.FullName):</label>
+                <span>@Html.DisplayFor(model => model.User.FullName)</span>
+            </div>
+            <div>
+                <label class="fw-bold">@Html.DisplayNameFor(model => model.User.DisplayName):</label>
+                <span>@Html.DisplayFor(model => model.User.DisplayName)</span>
+            </div>
+            <div>
+                <label class="fw-bold">@Html.DisplayNameFor(model => model.User.Email):</label>
+                <span>@Html.DisplayFor(model => model.User.Email)</span>
+            </div>
+            <div>
+                <label class="fw-bold">@Html.DisplayNameFor(model => model.User.CreateDateTime):</label>
+                <span>@Html.DisplayFor(model => model.User.CreateDateTime)</span>
+            </div>
+            <div>
+                <label class="fw-bold">@Html.DisplayNameFor(model => model.User.UserType.Name):</label>
+                <span>@Html.DisplayFor(model => model.User.UserType.Name)</span>
+            </div>
+            <div>
+                <label class="fw-bold">@Html.DisplayNameFor(model => model.User.UserStatus.Name):</label>
+                <span>@Html.DisplayFor(model => model.User.UserStatus.Name)</span>
+            </div>
+        </section>
 
-<h3>Are you sure you want to deactivate @Model.FullName?</h3>
-<div>
-    <h4>User Profile</h4>
-    <hr />
-    <section class="container">
-        <img style="width:150px;float:left;margin-right:20px"
-             src=@Model.GetImage() />
-        <div>
-            <label class="fw-bold">@Html.DisplayNameFor(model => model.FullName):</label>
-            <span>@Html.DisplayFor(model => model.FullName)</span>
-        </div>
-        <div>
-            <label class="fw-bold">@Html.DisplayNameFor(model => model.DisplayName):</label>
-            <span>@Html.DisplayFor(model => model.DisplayName)</span>
-        </div>
-        <div>
-            <label class="fw-bold">@Html.DisplayNameFor(model => model.Email):</label>
-            <span>@Html.DisplayFor(model => model.Email)</span>
-        </div>
-        <div>
-            <label class="fw-bold">@Html.DisplayNameFor(model => model.CreateDateTime):</label>
-            <span>@Html.DisplayFor(model => model.CreateDateTime)</span>
-        </div>
-        <div>
-            <label class="fw-bold">@Html.DisplayNameFor(model => model.UserType.Name):</label>
-            <span>@Html.DisplayFor(model => model.UserType.Name)</span>
-        </div>
-        <div>
-            <label class="fw-bold">@Html.DisplayNameFor(model => model.UserStatus.Name):</label>
-            <span>@Html.DisplayFor(model => model.UserStatus.Name)</span>
-        </div>
-    </section>
-    
-    <form asp-action="Deactivate">
-        <input type="submit" value="Deactivate" class="btn btn-danger" /> |
-        <a asp-action="Index">Reject</a>
-    </form>
-</div>
+        <form asp-action="Deactivate">
+            <input type="submit" value="Deactivate" class="btn btn-danger" /> |
+            <a asp-action="Index">Reject</a>
+        </form>
+    </div>
+}
